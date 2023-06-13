@@ -32,4 +32,4 @@ jobs:
     - name: Publish package to Test PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
-        password: 'fggfggfgffg'
+        password: ${{ secrets.TEST_PYPI_API_TOKEN }}
