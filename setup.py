@@ -2,7 +2,7 @@ import codecs
 import os.path
 
 from setuptools import setup, find_packages
-from catchpoint import vv
+#from catchpoint import vv
 
 def read(rel_path):
     here = os.path.abspath(os.path.dirname(__file__))
@@ -20,7 +20,7 @@ def get_version(rel_path):
 
 
 setup(name='cccc',
-      version=vv.get_version(),
+      version='2.0.1', #vv.get_version(),
       description='cccc Python agent',
       long_description='cccc Python agent',
       url='https://github.com/thundra-agent-python',
