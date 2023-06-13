@@ -61,7 +61,7 @@ def read_git_version():
             m.group('ver'), commits, m.group('sha'))        
  
 
-gg():
+def gg():
     read_git_version()
     return '2.3.4'
         
