@@ -119,8 +119,8 @@ def get_git_version(abbrev=7):
 
 
 def gg():
-    print('burada')
-    get_git_version()
+    print('hasan1', get_git_revision_short_hash())
+    print('hasan2', get_version('catchpoint/_version.py'))
     return '2.3.4'
         
 setup(name='cccc',
