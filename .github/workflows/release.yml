@@ -16,6 +16,8 @@ permissions:
 
 jobs:
   deploy:
+    env:
+      NAME: 'Snyk Demo'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -31,9 +33,8 @@ jobs:
       run: python -m build
     - name: Publish package to Test PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
-      env:
-        DATA12: 1234
       with:
           user: __token__
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
           repository_url: https://test.pypi.org/legacy/
+          DATA12: 1234
