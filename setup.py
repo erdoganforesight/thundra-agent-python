@@ -43,9 +43,12 @@ def read_git_version():
         print(data)
         print("deneme3")
         ver = data.splitlines()[0].strip()
-    except:
+    except Exception as ex:
+        print("error1")
+        print(ex)
         return
 
+    print("ver:", ver)
     if not ver:
         return
     m = re.search(_GIT_DESCRIPTION_RE, ver)
