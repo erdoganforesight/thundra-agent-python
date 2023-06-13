@@ -17,7 +17,7 @@ permissions:
 jobs:
   deploy:
     env:
-      RELEASE_TYPE: 'alpha'
+      RELEASE_TYPE: 'beta'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
