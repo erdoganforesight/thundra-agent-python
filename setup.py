@@ -31,7 +31,7 @@ def get_version():
     _hash = abs(hash(get_git_revision_short_hash())) % (10 ** 8)
     _version = get_version_from_file('catchpoint/_version.py')
     print("hasan", _version, _hash)
-    release_version = _version + '.a.' + str(hash)
+    release_version = _version + '.a.' + str(_hash)
     print(release_version)
     return release_version
         
