@@ -2,7 +2,7 @@ import codecs
 import os.path
 
 from setuptools import setup, find_packages
-from thundra import vv
+from catchpoint import vv
 
 def read(rel_path):
     here = os.path.abspath(os.path.dirname(__file__))
