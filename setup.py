@@ -38,7 +38,10 @@ def read_git_version():
         data, _ = proc.communicate()
         if proc.returncode:
             return
+        sys.stderr.write('version: git description (%s) is invalid, '
+                         'ignoring\n' % (data,))
         print(data)
+        raise RuntimeError("Unable to find version string." +data)
         ver = data.splitlines()[0].strip()
         print(ver)
         
