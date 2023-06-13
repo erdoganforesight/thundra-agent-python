@@ -9,7 +9,10 @@ from setuptools import setup, find_packages
 
 
 def get_git_revision_short_hash():
-    return subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).decode('ascii').strip()
+    try:
+        return subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).decode('ascii').strip()
+    except:
+        return "1"
 
 
 def read(rel_path):
