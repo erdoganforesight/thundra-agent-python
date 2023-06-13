@@ -1,8 +1,18 @@
 import codecs
 import os.path
 
+import re
+import subprocess
+import sys
+
 from setuptools import setup, find_packages
 #from catchpoint import vv
+
+_PEP386_SHORT_VERSION_RE = r'\d+(?:\.\d+)+(?:(?:[abc]|rc)\d+(?:\.\d+)*)?'
+_PEP386_VERSION_RE = r'^%s(?:\.post\d+)?(?:\.dev\d+)?$' % (
+    _PEP386_SHORT_VERSION_RE)
+_GIT_DESCRIPTION_RE = r'^v{0,1}(?P<ver>%s)-(?P<commits>\d+)-g(?P<sha>[\da-f]+)$' % (
+    _PEP386_SHORT_VERSION_RE)
 
 def read(rel_path):
     here = os.path.abspath(os.path.dirname(__file__))
@@ -19,6 +29,35 @@ def get_version(rel_path):
         raise RuntimeError("Unable to find version string.")
 
 
+def read_git_version():
+    try:
+        proc = subprocess.Popen(('git', 'describe', '--long', '--tags'),
+                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        data, _ = proc.communicate()
+        if proc.returncode:
+            return
+        ver = data.splitlines()[0].strip()
+        print(ver)
+        print(data)
+    except:
+        return
+
+    if not ver:
+        return
+    m = re.search(_GIT_DESCRIPTION_RE, ver)
+    if not m:
+        sys.stderr.write('version: git description (%s) is invalid, '
+                         'ignoring\n' % (ver,))
+        return
+
+    commits = int(m.group('commits'))
+    if not commits:
+        return m.group('ver')
+    else:
+        return '%s.post%d+g%s' % (
+            m.group('ver'), commits, m.group('sha'))        
+        
+        
 setup(name='cccc',
       version='2.0.1', #vv.get_version(),
       description='cccc Python agent',
