@@ -1,9 +1,9 @@
 from __future__ import division
 import mock
-from thundra import constants
-from thundra.samplers import TimeAwareSampler
-from thundra.config.config_provider import ConfigProvider
-from thundra.config import config_names
+from catchpoint import constants
+from catchpoint.samplers import TimeAwareSampler
+from catchpoint.config.config_provider import ConfigProvider
+from catchpoint.config import config_names
 
 
 def test_default_time_freq():
@@ -14,7 +14,7 @@ def test_default_time_freq():
 
 def test_freq_from_env():
     time_freq = 37
-    ConfigProvider.set(config_names.THUNDRA_SAMPLER_TIMEAWARE_TIMEFREQ, '{}'.format(time_freq))
+    ConfigProvider.set(config_names.CATCHPOINT_SAMPLER_TIMEAWARE_TIMEFREQ, '{}'.format(time_freq))
     tams = TimeAwareSampler()
 
     assert tams.time_freq == time_freq

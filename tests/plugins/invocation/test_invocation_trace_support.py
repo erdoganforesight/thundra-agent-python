@@ -1,10 +1,10 @@
 import mock
 import pytest
 
-from thundra import constants
-from thundra.context.execution_context import ExecutionContext
-from thundra.context.execution_context_manager import ExecutionContextManager
-from thundra.plugins.invocation import invocation_trace_support
+from catchpoint import constants
+from catchpoint.context.execution_context import ExecutionContext
+from catchpoint.context.execution_context_manager import ExecutionContextManager
+from catchpoint.plugins.invocation import invocation_trace_support
 
 tv = constants.SpanTags['TOPOLOGY_VERTEX']
 ot = constants.SpanTags['OPERATION_TYPE']
@@ -40,7 +40,7 @@ def mocked_span():
     return make_mocked_span
 
 
-@mock.patch('thundra.opentracing.recorder.ThundraRecorder.get_spans')
+@mock.patch('catchpoint.opentracing.recorder.CatchpointRecorder.get_spans')
 def test_get_resources(mocked_get_spans, mocked_span):
 
     span_args = [

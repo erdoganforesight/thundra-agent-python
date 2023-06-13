@@ -1,10 +1,10 @@
 import mysql.connector
 from mysql.connector.errors import Error as MySQLError
 
-from thundra import constants
-from thundra.config import config_names
-from thundra.config.config_provider import ConfigProvider
-from thundra.opentracing.tracer import ThundraTracer
+from catchpoint import constants
+from catchpoint.config import config_names
+from catchpoint.config.config_provider import ConfigProvider
+from catchpoint.opentracing.tracer import CatchpointTracer
 
 
 def test_mysql_integration():
@@ -22,7 +22,7 @@ def test_mysql_integration():
             print(table)
 
     finally:
-        tracer = ThundraTracer.get_instance()
+        tracer = CatchpointTracer.get_instance()
         mysql_span = tracer.get_spans()[1]
 
         assert mysql_span.domain_name == constants.DomainNames['DB']
@@ -38,7 +38,7 @@ def test_mysql_integration():
 
 
 def test_mysql_integration_mask_statement():
-    ConfigProvider.set(config_names.THUNDRA_TRACE_INTEGRATIONS_RDB_STATEMENT_MASK, 'true')
+    ConfigProvider.set(config_names.CATCHPOINT_TRACE_INTEGRATIONS_RDB_STATEMENT_MASK, 'true')
 
     query = "SELECT 1 + 1 AS solution"
     connection = mysql.connector.connect(
@@ -54,7 +54,7 @@ def test_mysql_integration_mask_statement():
             print(table)
 
     finally:
-        tracer = ThundraTracer.get_instance()
+        tracer = CatchpointTracer.get_instance()
         mysql_span = tracer.get_spans()[1]
 
         assert mysql_span.domain_name == constants.DomainNames['DB']
@@ -84,7 +84,7 @@ def test_mysql_integration_with_empty_query():
     except MySQLError:
         pass
     finally:
-        tracer = ThundraTracer.get_instance()
+        tracer = CatchpointTracer.get_instance()
         mysql_span = tracer.get_spans()[1]
 
         assert mysql_span.domain_name == constants.DomainNames['DB']
@@ -112,7 +112,7 @@ def test_mysql_integration_callproc():
     except MySQLError:
         pass
     finally:
-        tracer = ThundraTracer.get_instance()
+        tracer = CatchpointTracer.get_instance()
         mysql_span = tracer.get_spans()[1]
 
         assert mysql_span.domain_name == constants.DomainNames['DB']

@@ -1,10 +1,10 @@
 from bson.json_util import loads
 from pymongo import MongoClient
-from thundra import constants
-from thundra.opentracing.tracer import ThundraTracer
-from thundra.config.config_provider import ConfigProvider
-from thundra.config import config_names
-from thundra.compat import PY2
+from catchpoint import constants
+from catchpoint.opentracing.tracer import CatchpointTracer
+from catchpoint.config.config_provider import ConfigProvider
+from catchpoint.config import config_names
+from catchpoint.compat import PY2
 
 if not PY2:
 
@@ -17,7 +17,7 @@ if not PY2:
                 "tags": ["mongodb", "python", "pymongo"]}
 
         db.posts.insert_one(post)
-        tracer = ThundraTracer.get_instance()
+        tracer = CatchpointTracer.get_instance()
         span = tracer.get_spans()[1]
 
         assert span.operation_name == 'test'
@@ -45,7 +45,7 @@ if not PY2:
                 "tags": ["mongodb", "python", "pymongo"]}
 
         db.posts.insert_one(post)
-        tracer = ThundraTracer.get_instance()
+        tracer = CatchpointTracer.get_instance()
         tracer.clear()
 
         db.posts.update_one({'author': 'Mike'}, {'$set': {'text': 'My edited blog post!'}})
@@ -81,7 +81,7 @@ if not PY2:
         except:
             pass
 
-        tracer = ThundraTracer.get_instance()
+        tracer = CatchpointTracer.get_instance()
         span = tracer.get_spans()[1]
 
         assert span.operation_name == 'test'
@@ -102,11 +102,11 @@ if not PY2:
 
 
     def test_mongo_command_masked():
-        ConfigProvider.set(config_names.THUNDRA_TRACE_INTEGRATIONS_MONGODB_COMMAND_MASK, 'true')
+        ConfigProvider.set(config_names.CATCHPOINT_TRACE_INTEGRATIONS_MONGODB_COMMAND_MASK, 'true')
         client = MongoClient('localhost', 27017)
         db = client.test
         db.list_collection_names()
 
-        tracer = ThundraTracer.get_instance()
+        tracer = CatchpointTracer.get_instance()
         span = tracer.get_spans()[1]
         assert span.get_tag(constants.MongoDBTags['MONGODB_COMMAND']) is None

@@ -1,7 +1,7 @@
-from thundra import constants
-from thundra.samplers import CountAwareSampler
-from thundra.config.config_provider import ConfigProvider
-from thundra.config import config_names
+from catchpoint import constants
+from catchpoint.samplers import CountAwareSampler
+from catchpoint.config.config_provider import ConfigProvider
+from catchpoint.config import config_names
 
 def test_default_count_freq():
     cams = CountAwareSampler()
@@ -11,7 +11,7 @@ def test_default_count_freq():
 
 def test_freq_from_env():
     count_freq = 37
-    ConfigProvider.set(config_names.THUNDRA_SAMPLER_COUNTAWARE_COUNTFREQ, '{}'.format(count_freq))
+    ConfigProvider.set(config_names.CATCHPOINT_SAMPLER_COUNTAWARE_COUNTFREQ, '{}'.format(count_freq))
 
     cams = CountAwareSampler()
 

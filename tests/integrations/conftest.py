@@ -1,13 +1,13 @@
 import mock
 import pytest
 
-from thundra.context.execution_context_manager import ExecutionContextManager
-from thundra.opentracing.tracer import ThundraTracer
+from catchpoint.context.execution_context_manager import ExecutionContextManager
+from catchpoint.opentracing.tracer import CatchpointTracer
 
 
 @pytest.fixture(autouse=True)
 def start_root_span():
-    tracer = ThundraTracer.get_instance()
+    tracer = CatchpointTracer.get_instance()
     execution_context = ExecutionContextManager.get()
     tracer.start_active_span(operation_name="test",
                              finish_on_close=False,
@@ -22,5 +22,5 @@ def mock_tracer_get_call(self):
 
 @pytest.fixture(scope="module", autouse=True)
 def mock_get_active_span():
-    with mock.patch('thundra.opentracing.tracer.ThundraTracer.get_active_span', mock_tracer_get_call):
+    with mock.patch('catchpoint.opentracing.tracer.CatchpointTracer.get_active_span', mock_tracer_get_call):
         yield

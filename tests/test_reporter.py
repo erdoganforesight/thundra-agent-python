@@ -1,17 +1,17 @@
 import mock
 import json
 
-from thundra import constants
-from thundra.config import config_names
-from thundra.config.config_provider import ConfigProvider
-from thundra.reporter import Reporter
-from thundra.encoder import to_json
+from catchpoint import constants
+from catchpoint.config import config_names
+from catchpoint.config.config_provider import ConfigProvider
+from catchpoint.reporter import Reporter
+from catchpoint.encoder import to_json
 
 
-@mock.patch('thundra.reporter.requests')
+@mock.patch('catchpoint.reporter.requests')
 def test_send_report_to_url(mock_requests, mock_report):
-    ConfigProvider.set(config_names.THUNDRA_REPORT_REST_BASEURL, 'different_url/api')
-    ConfigProvider.set(config_names.THUNDRA_REPORT_REST_COMPOSITE_ENABLE, 'false')
+    ConfigProvider.set(config_names.CATCHPOINT_REPORT_REST_BASEURL, 'different_url/api')
+    ConfigProvider.set(config_names.CATCHPOINT_REPORT_REST_COMPOSITE_ENABLE, 'false')
     test_session = mock_requests.Session()
     reporter = Reporter('api key', session=test_session)
     responses = reporter.send_reports([mock_report])
@@ -29,7 +29,7 @@ def test_send_report_to_url(mock_requests, mock_report):
         assert response.status_code == 200
 
 
-@mock.patch('thundra.reporter.requests')
+@mock.patch('catchpoint.reporter.requests')
 def test_send_report(mock_requests, mock_invocation_report):
     test_session = mock_requests.Session()
     reporter = Reporter('unauthorized api key', session=test_session)
@@ -42,7 +42,7 @@ def test_send_report(mock_requests, mock_invocation_report):
 
 
 def test_get_report_batches(mock_report):
-    ConfigProvider.set(config_names.THUNDRA_REPORT_REST_COMPOSITE_BATCH_SIZE, '2')
+    ConfigProvider.set(config_names.CATCHPOINT_REPORT_REST_COMPOSITE_BATCH_SIZE, '2')
 
     reporter = Reporter('api key')
     batches = reporter.get_report_batches([mock_report] * 3)
@@ -64,7 +64,7 @@ def test_prepare_report_json(mock_report, mock_report_with_byte_field):
 
 
 def test_prepare_report_json_batch(mock_report):
-    ConfigProvider.set(config_names.THUNDRA_REPORT_REST_COMPOSITE_BATCH_SIZE, '1')
+    ConfigProvider.set(config_names.CATCHPOINT_REPORT_REST_COMPOSITE_BATCH_SIZE, '1')
 
     reporter = Reporter('api key')
 

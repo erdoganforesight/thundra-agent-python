@@ -1,11 +1,11 @@
 import mock
 import requests
 
-from thundra import constants
-from thundra.compat import urlparse
-from thundra.config import config_names
-from thundra.config.config_provider import ConfigProvider
-from thundra.opentracing.tracer import ThundraTracer
+from catchpoint import constants
+from catchpoint.compat import urlparse
+from catchpoint.config import config_names
+from catchpoint.config.config_provider import ConfigProvider
+from catchpoint.opentracing.tracer import CatchpointTracer
 
 
 def test_successful_http_call():
@@ -17,7 +17,7 @@ def test_successful_http_call():
         host = parsed_url.netloc
 
         requests.get(url)
-        tracer = ThundraTracer.get_instance()
+        tracer = CatchpointTracer.get_instance()
         http_span = tracer.get_spans()[1]
 
         assert http_span.operation_name == host + path
@@ -46,7 +46,7 @@ def test_http_put():
         host = parsed_url.netloc
 
         requests.put(url, data={"message": "test"})
-        tracer = ThundraTracer.get_instance()
+        tracer = CatchpointTracer.get_instance()
         http_span = tracer.get_spans()[1]
 
         assert http_span.operation_name == host + normalized_path
@@ -68,7 +68,7 @@ def test_http_put():
 
 def test_http_put_body_masked():
     try:
-        ConfigProvider.set(config_names.THUNDRA_TRACE_INTEGRATIONS_HTTP_BODY_MASK, 'true')
+        ConfigProvider.set(config_names.CATCHPOINT_TRACE_INTEGRATIONS_HTTP_BODY_MASK, 'true')
         url = 'https://jsonplaceholder.typicode.com/users/3'
         parsed_url = urlparse(url)
         path = parsed_url.path
@@ -77,7 +77,7 @@ def test_http_put_body_masked():
         host = parsed_url.netloc
 
         requests.put(url, data={"message": "test"})
-        tracer = ThundraTracer.get_instance()
+        tracer = CatchpointTracer.get_instance()
         http_span = tracer.get_spans()[1]
 
         assert http_span.operation_name == host + normalized_path
@@ -107,7 +107,7 @@ def test_successful_http_call_with_query_params():
         host = parsed_url.netloc
 
         requests.get(url)
-        tracer = ThundraTracer.get_instance()
+        tracer = CatchpointTracer.get_instance()
         http_span = tracer.get_spans()[1]
 
         assert http_span.operation_name == host + normalized_path
@@ -134,7 +134,7 @@ def test_http_call_with_session():
         s = requests.Session()
         s.get(url)
 
-        tracer = ThundraTracer.get_instance()
+        tracer = CatchpointTracer.get_instance()
         http_span = tracer.get_spans()[1]
 
         assert http_span.domain_name == constants.DomainNames['API']
@@ -161,7 +161,7 @@ def test_erroneous_http_call():
         except Exception:
             pass
 
-        tracer = ThundraTracer.get_instance()
+        tracer = CatchpointTracer.get_instance()
         http_span = tracer.get_spans()[1]
 
         assert http_span.operation_name == host + path
@@ -182,7 +182,7 @@ def test_erroneous_http_call():
 
 
 def test_http_path_depth():
-    ConfigProvider.set(config_names.THUNDRA_TRACE_INTEGRATIONS_HTTP_URL_DEPTH, '2')
+    ConfigProvider.set(config_names.CATCHPOINT_TRACE_INTEGRATIONS_HTTP_URL_DEPTH, '2')
     try:
         url = 'https://jsonplaceholder.typicode.com/asd/qwe/xyz'
         parsed_url = urlparse(url)
@@ -192,7 +192,7 @@ def test_http_path_depth():
         host = parsed_url.netloc
 
         requests.get(url)
-        tracer = ThundraTracer.get_instance()
+        tracer = CatchpointTracer.get_instance()
         http_span = tracer.get_spans()[1]
 
         assert http_span.operation_name == host + normalized_path
@@ -209,7 +209,7 @@ def test_http_path_depth():
         raise
 
 
-@mock.patch('thundra.integrations.requests.RequestsIntegration.actual_call')
+@mock.patch('catchpoint.integrations.requests.RequestsIntegration.actual_call')
 def test_apigw_call(mock_actual_call):
     mock_actual_call.return_value = requests.Response()
     mock_actual_call.return_value.headers = {"x-amz-apigw-id": "test_id"}
@@ -222,7 +222,7 @@ def test_apigw_call(mock_actual_call):
         normalized_path = "/dev"
 
         requests.get(url)
-        tracer = ThundraTracer.get_instance()
+        tracer = CatchpointTracer.get_instance()
         http_span = tracer.get_spans()[1]
 
         assert http_span.operation_name == host + normalized_path
@@ -239,7 +239,7 @@ def test_apigw_call(mock_actual_call):
         raise
 
 
-@mock.patch('thundra.integrations.requests.RequestsIntegration.actual_call')
+@mock.patch('catchpoint.integrations.requests.RequestsIntegration.actual_call')
 def test_apigw_call_v2(mock_actual_call):
     mock_actual_call.return_value = requests.Response()
     mock_actual_call.return_value.headers = {"apigw-requestid": "test_id", constants.TRIGGER_RESOURCE_NAME_KEY: "test"}
@@ -251,7 +251,7 @@ def test_apigw_call_v2(mock_actual_call):
         host = parsed_url.netloc
 
         requests.get(url)
-        tracer = ThundraTracer.get_instance()
+        tracer = CatchpointTracer.get_instance()
         http_span = tracer.get_spans()[1]
 
         assert http_span.operation_name == "test"
@@ -268,7 +268,7 @@ def test_apigw_call_v2(mock_actual_call):
         raise
 
 
-@mock.patch('thundra.integrations.requests.RequestsIntegration.actual_call')
+@mock.patch('catchpoint.integrations.requests.RequestsIntegration.actual_call')
 def test_http_4xx_error(mock_actual_call):
     mock_actual_call.return_value = requests.Response()
     mock_actual_call.return_value.status_code = 404
@@ -282,7 +282,7 @@ def test_http_4xx_error(mock_actual_call):
 
     requests.get(url)
 
-    tracer = ThundraTracer.get_instance()
+    tracer = CatchpointTracer.get_instance()
     http_span = tracer.get_spans()[1]
 
     assert http_span.operation_name == host + path
@@ -300,9 +300,9 @@ def test_http_4xx_error(mock_actual_call):
     assert http_span.get_tag('error.message') == 'Not Found'
 
 
-@mock.patch('thundra.integrations.requests.RequestsIntegration.actual_call')
+@mock.patch('catchpoint.integrations.requests.RequestsIntegration.actual_call')
 def test_http_4xx_error_with_min_status_500(mock_actual_call, monkeypatch):
-    ConfigProvider.set(config_names.THUNDRA_TRACE_INTEGRATIONS_HTTP_ERROR_STATUS_CODE_MIN, '500')
+    ConfigProvider.set(config_names.CATCHPOINT_TRACE_INTEGRATIONS_HTTP_ERROR_STATUS_CODE_MIN, '500')
     mock_actual_call.return_value = requests.Response()
     mock_actual_call.return_value.status_code = 404
     mock_actual_call.return_value.reason = "Not Found"
@@ -315,7 +315,7 @@ def test_http_4xx_error_with_min_status_500(mock_actual_call, monkeypatch):
 
     requests.get(url)
 
-    tracer = ThundraTracer.get_instance()
+    tracer = CatchpointTracer.get_instance()
     http_span = tracer.get_spans()[1]
 
     assert http_span.operation_name == host + path
@@ -333,7 +333,7 @@ def test_http_4xx_error_with_min_status_500(mock_actual_call, monkeypatch):
     assert http_span.get_tag('error.message') is None
 
 
-@mock.patch('thundra.integrations.requests.RequestsIntegration.actual_call')
+@mock.patch('catchpoint.integrations.requests.RequestsIntegration.actual_call')
 def test_http_5xx_error(mock_actual_call):
     mock_actual_call.return_value = requests.Response()
     mock_actual_call.return_value.status_code = 500
@@ -347,7 +347,7 @@ def test_http_5xx_error(mock_actual_call):
 
     requests.get(url)
 
-    tracer = ThundraTracer.get_instance()
+    tracer = CatchpointTracer.get_instance()
     http_span = tracer.get_spans()[1]
 
     assert http_span.operation_name == host + path

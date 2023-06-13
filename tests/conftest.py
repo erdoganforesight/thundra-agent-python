@@ -1,14 +1,14 @@
 import mock
 import pytest
 
-import thundra.constants as constants
-from thundra.config.config_provider import ConfigProvider
-from thundra.context.execution_context import ExecutionContext
-from thundra.context.execution_context_manager import ExecutionContextManager
-from thundra.context.global_execution_context_provider import GlobalExecutionContextProvider
-from thundra.plugins.invocation import invocation_support
-from thundra.reporter import Reporter
-from thundra.thundra_agent import Thundra
+import catchpoint.constants as constants
+from catchpoint.config.config_provider import ConfigProvider
+from catchpoint.context.execution_context import ExecutionContext
+from catchpoint.context.execution_context_manager import ExecutionContextManager
+from catchpoint.context.global_execution_context_provider import GlobalExecutionContextProvider
+from catchpoint.plugins.invocation import invocation_support
+from catchpoint.reporter import Reporter
+from catchpoint.catchpoint_agent import Catchpoint
 
 
 class MockContext:
@@ -168,51 +168,51 @@ def mock_invocation_report():
 
 
 @pytest.fixture
-@mock.patch('thundra.reporter.requests')
+@mock.patch('catchpoint.reporter.requests')
 def reporter(mock_requests):
     return Reporter('api key', mock_requests.Session())
 
 
 @pytest.fixture
-def thundra(reporter):
-    thundra = Thundra(api_key="api_key", disable_metric=True)
-    thundra.reporter = reporter
-    return thundra
+def catchpoint(reporter):
+    catchpoint = Catchpoint(api_key="api_key", disable_metric=True)
+    catchpoint.reporter = reporter
+    return catchpoint
 
 
 @pytest.fixture
-def handler(thundra):
-    @thundra.call
+def handler(catchpoint):
+    @catchpoint.call
     def _handler(event, context):
         pass
 
-    return thundra, _handler
+    return catchpoint, _handler
 
 
 @pytest.fixture
-def handler_with_exception(thundra):
-    @thundra.call
+def handler_with_exception(catchpoint):
+    @catchpoint.call
     def _handler(event, context):
         raise Exception('hello')
 
-    return thundra, _handler
+    return catchpoint, _handler
 
 
 @pytest.fixture
-def handler_with_user_error(thundra):
-    @thundra.call
+def handler_with_user_error(catchpoint):
+    @catchpoint.call
     def _handler(event, context):
         invocation_support.set_error(Exception("test"))
 
-    return thundra, _handler
+    return catchpoint, _handler
 
 
 @pytest.fixture
-def wrap_handler_with_thundra(thundra):
-    def _wrap_handler_with_thundra(handler):
-        return thundra, thundra(handler)
+def wrap_handler_with_catchpoint(catchpoint):
+    def _wrap_handler_with_catchpoint(handler):
+        return catchpoint, catchpoint(handler)
 
-    return _wrap_handler_with_thundra
+    return _wrap_handler_with_catchpoint
 
 
 @pytest.fixture()
@@ -449,7 +449,7 @@ def mock_dynamodb_event_trace_injected():
                         "Id": {
                             "N": "101"
                         },
-                        constants.THUNDRA_SPAN_ID_KEY: {
+                        constants.CATCHPOINT_SPAN_ID_KEY: {
                             "S": "test_id1"
                         }
                     },
@@ -489,7 +489,7 @@ def mock_dynamodb_event_trace_injected():
                         "Id": {
                             "N": "101"
                         },
-                        constants.THUNDRA_SPAN_ID_KEY: {
+                        constants.CATCHPOINT_SPAN_ID_KEY: {
                             "S": "test_id2"
                         }
                     },
@@ -520,7 +520,7 @@ def mock_dynamodb_event_trace_injected():
                         "Id": {
                             "N": "101"
                         },
-                        constants.THUNDRA_SPAN_ID_KEY: {
+                        constants.CATCHPOINT_SPAN_ID_KEY: {
                             "S": "test_id3"
                         }
                     },
@@ -899,5 +899,5 @@ def mock_eventbridge_event():
 
 @pytest.fixture(scope='session', autouse=True)
 def mock_context_clear():
-    with mock.patch('thundra.context.execution_context_manager.ExecutionContextManager.clear') as _fixture:
+    with mock.patch('catchpoint.context.execution_context_manager.ExecutionContextManager.clear') as _fixture:
         yield _fixture

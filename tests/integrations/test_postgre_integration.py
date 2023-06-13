@@ -1,10 +1,10 @@
 import psycopg2
 from psycopg2 import Error as PostgreError
 
-from thundra import constants
-from thundra.config import config_names
-from thundra.config.config_provider import ConfigProvider
-from thundra.opentracing.tracer import ThundraTracer
+from catchpoint import constants
+from catchpoint.config import config_names
+from catchpoint.config.config_provider import ConfigProvider
+from catchpoint.opentracing.tracer import CatchpointTracer
 
 
 def test_postgre_integration():
@@ -23,7 +23,7 @@ def test_postgre_integration():
             print(table)
 
     finally:
-        tracer = ThundraTracer.get_instance()
+        tracer = CatchpointTracer.get_instance()
         postgre_span = tracer.get_spans()[1]
 
         assert postgre_span.domain_name == constants.DomainNames['DB']
@@ -39,7 +39,7 @@ def test_postgre_integration():
 
 
 def test_postgre_integration_mask_statement():
-    ConfigProvider.set(config_names.THUNDRA_TRACE_INTEGRATIONS_RDB_STATEMENT_MASK, 'true')
+    ConfigProvider.set(config_names.CATCHPOINT_TRACE_INTEGRATIONS_RDB_STATEMENT_MASK, 'true')
     query = "select 1 + 1 AS solution"
 
     connection = psycopg2.connect(
@@ -55,7 +55,7 @@ def test_postgre_integration_mask_statement():
             print(table)
 
     finally:
-        tracer = ThundraTracer.get_instance()
+        tracer = CatchpointTracer.get_instance()
         postgre_span = tracer.get_spans()[1]
 
         assert postgre_span.domain_name == constants.DomainNames['DB']
@@ -85,7 +85,7 @@ def test_postgre_integration_with_empty_query():
     except PostgreError:
         pass
     finally:
-        tracer = ThundraTracer.get_instance()
+        tracer = CatchpointTracer.get_instance()
         postgre_span = tracer.get_spans()[1]
 
         assert postgre_span.domain_name == constants.DomainNames['DB']
@@ -113,7 +113,7 @@ def test_postgre_integration_callproc():
     except PostgreError:
         pass
     finally:
-        tracer = ThundraTracer.get_instance()
+        tracer = CatchpointTracer.get_instance()
         postgre_span = tracer.get_spans()[1]
 
         assert postgre_span.domain_name == constants.DomainNames['DB']

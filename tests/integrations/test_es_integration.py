@@ -1,13 +1,13 @@
 from elasticsearch import Elasticsearch, ElasticsearchException
 
-from thundra import constants
-from thundra.config import config_names
-from thundra.config.config_provider import ConfigProvider
-from thundra.opentracing.tracer import ThundraTracer
+from catchpoint import constants
+from catchpoint.config import config_names
+from catchpoint.config.config_provider import ConfigProvider
+from catchpoint.opentracing.tracer import CatchpointTracer
 
 
 def test_create_index():
-    ConfigProvider.set(config_names.THUNDRA_TRACE_INTEGRATIONS_ELASTICSEARCH_PATH_DEPTH, '3')
+    ConfigProvider.set(config_names.CATCHPOINT_TRACE_INTEGRATIONS_ELASTICSEARCH_PATH_DEPTH, '3')
     author1 = {"name": "Sidney Sheldon", "novels_count": 18}
     try:
         es = Elasticsearch([{'host': 'test', 'port': 3737}], max_retries=0)
@@ -15,7 +15,7 @@ def test_create_index():
     except ElasticsearchException as e:
         pass
     finally:
-        tracer = ThundraTracer.get_instance()
+        tracer = CatchpointTracer.get_instance()
         span = tracer.get_spans()[1]
 
         assert span.operation_name == '/authors/authors/1'
@@ -32,14 +32,14 @@ def test_create_index():
 
 
 def test_get_doc():
-    ConfigProvider.set(config_names.THUNDRA_TRACE_INTEGRATIONS_ELASTICSEARCH_PATH_DEPTH, '3')
+    ConfigProvider.set(config_names.CATCHPOINT_TRACE_INTEGRATIONS_ELASTICSEARCH_PATH_DEPTH, '3')
     try:
         es = Elasticsearch(['one_host', 'another_host'], max_retries=0)
         es.get(index='test-index', doc_type='tweet', id=1)
     except ElasticsearchException as e:
         pass
     finally:
-        tracer = ThundraTracer.get_instance()
+        tracer = CatchpointTracer.get_instance()
         span = tracer.get_spans()[1]
 
         hosts = span.get_tag(constants.ESTags['ES_HOSTS'])
@@ -62,7 +62,7 @@ def test_get_doc():
 
 
 def test_refresh():
-    ConfigProvider.set(config_names.THUNDRA_TRACE_INTEGRATIONS_ELASTICSEARCH_PATH_DEPTH, '2')
+    ConfigProvider.set(config_names.CATCHPOINT_TRACE_INTEGRATIONS_ELASTICSEARCH_PATH_DEPTH, '2')
     try:
         es = Elasticsearch([{'host': 'test', 'port': 3737}], max_retries=0)
         res = es.indices.refresh(index='test-index')
@@ -70,7 +70,7 @@ def test_refresh():
     except ElasticsearchException as e:
         pass
     finally:
-        tracer = ThundraTracer.get_instance()
+        tracer = CatchpointTracer.get_instance()
         span = tracer.get_spans()[1]
 
         assert span.operation_name == '/test-index/_refresh'
@@ -87,7 +87,7 @@ def test_refresh():
 
 
 def test_mask_body():
-    ConfigProvider.set(config_names.THUNDRA_TRACE_INTEGRATIONS_ELASTICSEARCH_BODY_MASK, 'true')
+    ConfigProvider.set(config_names.CATCHPOINT_TRACE_INTEGRATIONS_ELASTICSEARCH_BODY_MASK, 'true')
     try:
         es = Elasticsearch([{'host': 'test', 'port': 3737}], max_retries=0)
         author1 = {"name": "Sidney Sheldon", "novels_count": 18}
@@ -95,7 +95,7 @@ def test_mask_body():
     except ElasticsearchException:
         pass
     finally:
-        tracer = ThundraTracer.get_instance()
+        tracer = CatchpointTracer.get_instance()
         span = tracer.get_spans()[1]
 
         assert span.get_tag(constants.ESTags['ES_BODY']) is None

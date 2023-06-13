@@ -1,9 +1,9 @@
 import redis
 
-from thundra import constants
-from thundra.config import config_names
-from thundra.config.config_provider import ConfigProvider
-from thundra.opentracing.tracer import ThundraTracer
+from catchpoint import constants
+from catchpoint.config import config_names
+from catchpoint.config.config_provider import ConfigProvider
+from catchpoint.opentracing.tracer import CatchpointTracer
 
 
 def test_set():
@@ -13,7 +13,7 @@ def test_set():
     except:
         pass
     finally:
-        tracer = ThundraTracer.get_instance()
+        tracer = CatchpointTracer.get_instance()
         span = tracer.get_spans()[1]
 
         assert span.class_name == 'Redis'
@@ -28,7 +28,7 @@ def test_set():
 
 
 def test_set_mask_command():
-    ConfigProvider.set(config_names.THUNDRA_TRACE_INTEGRATIONS_REDIS_COMMAND_MASK, 'true')
+    ConfigProvider.set(config_names.CATCHPOINT_TRACE_INTEGRATIONS_REDIS_COMMAND_MASK, 'true')
 
     try:
         r = redis.Redis(host="test", port="12345", password="pass")
@@ -36,7 +36,7 @@ def test_set_mask_command():
     except:
         pass
     finally:
-        tracer = ThundraTracer.get_instance()
+        tracer = CatchpointTracer.get_instance()
         span = tracer.get_spans()[1]
 
         assert span.class_name == 'Redis'
@@ -59,7 +59,7 @@ def test_get():
     except:
         pass
     finally:
-        tracer = ThundraTracer.get_instance()
+        tracer = CatchpointTracer.get_instance()
         span = tracer.get_spans()[1]
         assert span.class_name == 'Redis'
         assert span.domain_name == 'Cache'
@@ -73,7 +73,7 @@ def test_get():
 
 
 def test_get_mask_command():
-    ConfigProvider.set(config_names.THUNDRA_TRACE_INTEGRATIONS_REDIS_COMMAND_MASK, 'true')
+    ConfigProvider.set(config_names.CATCHPOINT_TRACE_INTEGRATIONS_REDIS_COMMAND_MASK, 'true')
 
     try:
         r = redis.Redis(host="test", port="12345", password="pass")
@@ -81,7 +81,7 @@ def test_get_mask_command():
     except:
         pass
     finally:
-        tracer = ThundraTracer.get_instance()
+        tracer = CatchpointTracer.get_instance()
         span = tracer.get_spans()[1]
         assert span.class_name == 'Redis'
         assert span.domain_name == 'Cache'
