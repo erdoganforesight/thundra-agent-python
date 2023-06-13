@@ -28,6 +28,8 @@ def get_version(rel_path):
     else:
         raise RuntimeError("Unable to find version string.")
 
+        
+        
 
 def read_git_version():
     try:
@@ -57,10 +59,14 @@ def read_git_version():
     else:
         return '%s.post%d+g%s' % (
             m.group('ver'), commits, m.group('sha'))        
-        
+ 
+
+gg():
+    read_git_version()
+    return '2.3.4'
         
 setup(name='cccc',
-      version='2.0.1', #vv.get_version(),
+      version=gg(),
       description='cccc Python agent',
       long_description='cccc Python agent',
       url='https://github.com/thundra-agent-python',
