@@ -62,6 +62,7 @@ def read_git_version():
  
 
 def gg():
+    print('burada')
     read_git_version()
     return '2.3.4'
         
