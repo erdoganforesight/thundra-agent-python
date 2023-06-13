@@ -24,7 +24,9 @@ def call_git_describe(abbrev):
                   stdout=PIPE, stderr=PIPE)
         p.stderr.close()
         print("aaaaaaaaaaaa1")
-        line = p.stdout.readlines()[0]
+        lines = p.stdout.readlines()
+        print("aaaaaaaaaaaa1", lines)
+        line = lines[0]
         print("aaaaaaaaaaaa3", line)
         return line.strip()
 
