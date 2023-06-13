@@ -18,7 +18,11 @@ _GIT_DESCRIPTION_RE = r'^v{0,1}(?P<ver>%s)-(?P<commits>\d+)-g(?P<sha>[\da-f]+)$'
 from subprocess import Popen, PIPE
 
 
+def get_git_revision_short_hash():
+    return subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).decode('ascii').strip()
+
 def call_git_describe(abbrev):
+    print("bbbbbbbbbbb1", get_git_revision_short_hash())
     try:
         p = Popen(['git', 'describe', '--abbrev=%d' % abbrev],
                   stdout=PIPE, stderr=PIPE)
