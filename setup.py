@@ -6,16 +6,6 @@ import subprocess
 import sys
 
 from setuptools import setup, find_packages
-#from catchpoint import vv
-
-_PEP386_SHORT_VERSION_RE = r'\d+(?:\.\d+)+(?:(?:[abc]|rc)\d+(?:\.\d+)*)?'
-_PEP386_VERSION_RE = r'^%s(?:\.post\d+)?(?:\.dev\d+)?$' % (
-    _PEP386_SHORT_VERSION_RE)
-_GIT_DESCRIPTION_RE = r'^v{0,1}(?P<ver>%s)-(?P<commits>\d+)-g(?P<sha>[\da-f]+)$' % (
-    _PEP386_SHORT_VERSION_RE)
-
-
-from subprocess import Popen, PIPE
 
 
 def get_git_revision_short_hash():
@@ -37,13 +27,16 @@ def get_version(rel_path):
         raise RuntimeError("Unable to find version string.")
  
 
-def gg():
+def get_version():
     print('hasan1', get_git_revision_short_hash())
     print('hasan2', get_version('catchpoint/_version.py'))
-    return '2.3.4'
+    _hash = get_git_revision_short_hash()
+    _version = get_version('catchpoint/_version.py')
+    return _version + '.' + _hash
         
+    
 setup(name='cccc',
-      version=gg(),
+      version=get_version(),
       description='cccc Python agent',
       long_description='cccc Python agent',
       url='https://github.com/thundra-agent-python',
