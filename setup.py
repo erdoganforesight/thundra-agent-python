@@ -36,9 +36,10 @@ def read_git_version():
         data, _ = proc.communicate()
         if proc.returncode:
             return
+        print(data)
         ver = data.splitlines()[0].strip()
         print(ver)
-        print(data)
+        
     except:
         return
 
