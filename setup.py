@@ -37,10 +37,10 @@ def get_version():
     return release_version
         
     
-setup(name='cccc',
+setup(name='aaa',
       version=get_version(),
-      description='cccc Python agent',
-      long_description='cccc Python agent',
+      description='aaa agent',
+      long_description='aaa agent',
       url='https://github.com/erdoganforesight/thundra-agent-python',
       author='erdoganyesil',
       author_email='erdoganyesil@gmail.com',
