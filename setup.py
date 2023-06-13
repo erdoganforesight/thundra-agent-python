@@ -34,34 +34,20 @@ def get_version(rel_path):
 def read_git_version():
     print("deneme")
     try:
+        print("deneme3")
         proc = subprocess.Popen(('git', 'describe', '--long', '--tags'),
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print("deneme4")
         data, _ = proc.communicate()
+        print("deneme5")
         if proc.returncode:
+            print("deneme6")
             return
-        print("deneme2")
-        print(data)
-        print("deneme3")
-        ver = data.splitlines()[0].strip()
+        print("deneme7")
     except:
         print("error1")
         return
-
-    print("ver:", ver)
-    if not ver:
-        return
-    m = re.search(_GIT_DESCRIPTION_RE, ver)
-    if not m:
-        sys.stderr.write('version: git description (%s) is invalid, '
-                         'ignoring\n' % (ver,))
-        return
-
-    commits = int(m.group('commits'))
-    if not commits:
-        return m.group('ver')
-    else:
-        return '%s.post%d+g%s' % (
-            m.group('ver'), commits, m.group('sha'))        
+      
  
 
 def gg():
