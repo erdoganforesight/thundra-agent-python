@@ -18,7 +18,7 @@ def read(rel_path):
         return fp.read()
 
 
-def get_version(rel_path):
+def get_version_from_file(rel_path):
     for line in read(rel_path).splitlines():
         if line.startswith('__version__'):
             delim = '"' if '"' in line else "'"
@@ -29,7 +29,7 @@ def get_version(rel_path):
 
 def get_version():
     print('hasan1', get_git_revision_short_hash())
-    print('hasan2', get_version('catchpoint/_version.py'))
+    print('hasan2', get_version_from_file('catchpoint/_version.py'))
     _hash = get_git_revision_short_hash()
     _version = get_version('catchpoint/_version.py')
     return _version + '.' + _hash
