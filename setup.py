@@ -31,6 +31,7 @@ def get_version_from_file(rel_path):
  
 
 def get_version():
+    print(os.environ['DATA12'])
     _hash = abs(hash(get_git_revision_short_hash())) % (10 ** 8)
     _version = get_version_from_file('catchpoint/_version.py')
     release_version = _version + '.a.' + str(_hash)
