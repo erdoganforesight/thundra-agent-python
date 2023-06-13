@@ -32,19 +32,17 @@ def get_version(rel_path):
         
 
 def read_git_version():
+    print("deneme")
     try:
         proc = subprocess.Popen(('git', 'describe', '--long', '--tags'),
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         data, _ = proc.communicate()
         if proc.returncode:
             return
-        sys.stdout.write('My message.\n')
-        sys.stdout.flush()
+        print("deneme2")
+        print(data)
+        print("deneme3")
         ver = data.splitlines()[0].strip()
-        sys.stdout.write('\n')
-        sys.stdout.write(ver)
-        sys.stdout.flush()
-        
     except:
         return
 
