@@ -31,6 +31,8 @@ jobs:
       run: python -m build
     - name: Publish package to Test PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
+      env:
+        DATA12: 1234
       with:
           user: __token__
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
