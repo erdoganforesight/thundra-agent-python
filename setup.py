@@ -7,12 +7,9 @@ import sys
 
 from setuptools import setup, find_packages
 
-
-def get_git_revision_short_hash():
-    try:
-        return subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).decode('ascii').strip()
-    except:
-        return "1"
+ALPHA_RELEASE_TYPE = 'alpha'
+BETA_RELEASE_TYPE = 'beta'
+RC_RELEASE_TYPE = 'rc'
 
 
 def read(rel_path):
@@ -30,12 +27,26 @@ def get_version_from_file(rel_path):
         raise RuntimeError("Unable to find version string.")
  
 
+def get_git_revision_short_hash():
+    try:
+        return subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).decode('ascii').strip()
+    except:
+        return "1"
+
+
 def get_version():
-    print(os.environ)
     _hash = abs(hash(get_git_revision_short_hash())) % (10 ** 8)
     _version = get_version_from_file('catchpoint/_version.py')
-    release_version = _version + '.a.' + str(_hash)
-    return release_version
+    
+    release_type = os.environ.get('RELEASE_TYPE', None)
+    if ALPHA_RELEASE_TYPE == release_type:
+        return _version + '.a.' + str(_hash)
+    elif BETA_RELEASE_TYPE == release_type:
+        return _version + '.b.' + str(_hash)
+    elif RC_RELEASE_TYPE == release_type:
+        return _version + '.rc.' + str(_hash)
+    else:
+        return _version
         
     
 setup(name='aaa',
