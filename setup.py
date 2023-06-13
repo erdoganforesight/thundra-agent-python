@@ -14,6 +14,35 @@ _PEP386_VERSION_RE = r'^%s(?:\.post\d+)?(?:\.dev\d+)?$' % (
 _GIT_DESCRIPTION_RE = r'^v{0,1}(?P<ver>%s)-(?P<commits>\d+)-g(?P<sha>[\da-f]+)$' % (
     _PEP386_SHORT_VERSION_RE)
 
+
+from subprocess import Popen, PIPE
+
+
+def call_git_describe(abbrev):
+    try:
+        p = Popen(['git', 'describe', '--abbrev=%d' % abbrev],
+                  stdout=PIPE, stderr=PIPE)
+        p.stderr.close()
+        print("aaaaaaaaaaaa1")
+        line = p.stdout.readlines()[0]
+        print("aaaaaaaaaaaa3", line)
+        return line.strip()
+
+    except:
+        print("aaaaaaaaaaaa4")
+        return None
+
+
+def is_dirty():
+    try:
+        p = Popen(["git", "diff-index", "--name-only", "HEAD"],
+                  stdout=PIPE, stderr=PIPE)
+        p.stderr.close()
+        lines = p.stdout.readlines()
+        return len(lines) > 0
+    except:
+        return False
+
 def read(rel_path):
     here = os.path.abspath(os.path.dirname(__file__))
     with codecs.open(os.path.join(here, rel_path), 'r') as fp:
