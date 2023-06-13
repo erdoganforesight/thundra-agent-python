@@ -21,33 +21,6 @@ from subprocess import Popen, PIPE
 def get_git_revision_short_hash():
     return subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).decode('ascii').strip()
 
-def call_git_describe(abbrev):
-    print("bbbbbbbbbbb1", get_git_revision_short_hash())
-    try:
-        p = Popen(['git', 'describe', '--abbrev=%d' % abbrev],
-                  stdout=PIPE, stderr=PIPE)
-        p.stderr.close()
-        print("aaaaaaaaaaaa1")
-        lines = p.stdout.readlines()
-        print("aaaaaaaaaaaa1", lines)
-        line = lines[0]
-        print("aaaaaaaaaaaa3", line)
-        return line.strip()
-
-    except:
-        print("aaaaaaaaaaaa4")
-        return None
-
-
-def is_dirty():
-    try:
-        p = Popen(["git", "diff-index", "--name-only", "HEAD"],
-                  stdout=PIPE, stderr=PIPE)
-        p.stderr.close()
-        lines = p.stdout.readlines()
-        return len(lines) > 0
-    except:
-        return False
 
 def read(rel_path):
     here = os.path.abspath(os.path.dirname(__file__))
@@ -62,61 +35,7 @@ def get_version(rel_path):
             return line.split(delim)[1]
     else:
         raise RuntimeError("Unable to find version string.")
-
-        
-        
-
-def read_git_version():
-    print("deneme")
-    try:
-        print("deneme3")
-        proc = subprocess.Popen(('git', 'describe', '--long', '--tags'),
-                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        print("deneme4")
-        data, _ = proc.communicate()
-        print("deneme5")
-        if proc.returncode:
-            print("deneme6")
-            return
-        print("deneme7")
-    except:
-        print("error1")
-        return
-      
-
-def get_git_version(abbrev=7):
-    # Read in the version that's currently in RELEASE-VERSION.
-
-    release_version = get_version('catchpoint/_version.py')
-    print("deneme0", release_version)
-
-    # First try to get the current version using “git describe”.
-    version = call_git_describe(abbrev)
-    print("deneme1", version)
-    if is_dirty():
-        version += "-dirty"
-
-    # If that doesn't work, fall back on the value that's in
-    # RELEASE-VERSION.
-
-    if version is None:
-        version = release_version
-
-    # If we still don't have anything, that's an error.
-
-    if version is None:
-        raise ValueError("Cannot find the version number!")
-
-    # If the current version is different from what's in the
-    # RELEASE-VERSION file, update the file to be current.
-
-    if version != release_version:
-        write_release_version(version)
-
-    # Finally, return the current version.
-
-    return version
-
+ 
 
 def gg():
     print('hasan1', get_git_revision_short_hash())
